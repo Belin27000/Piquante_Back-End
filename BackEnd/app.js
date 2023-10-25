@@ -1,9 +1,9 @@
 const express = require('express');
-require('dotenv').config()
-
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const dotenv = require('dotenv').config();
+const databaseUrl = process.env.DATABASE_URL
 const app = express();
-mongoose.connect('mongodb+srv://belin:<process.env.SECRET_KEY>@cluster0.xsfqrpi.mongodb.net/?retryWrites=true&w=majority',
+mongoose.connect(databaseUrl,
     {
         useNewUrlParser: true,
         useUnifiedTopology: true
