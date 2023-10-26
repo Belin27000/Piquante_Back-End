@@ -1,15 +1,11 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv').config();
-const databaseUrl = process.env.DATABASE_URL
+
+const userRoutes = require('./routes/user.routes.js');
+
 const app = express();
-mongoose.connect(databaseUrl,
-    {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    })
-    .then(() => console.log('Connexion à MongoDB réussie !'))
-    .catch(() => console.log('Connexion à MongoDB échouée !'));
+
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json());
 
 
 app.use((req, res, next) => {
@@ -19,22 +15,19 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use((req, res, next) => {
-    console.log("requete reçu");
-    next()
-})
+const helmet = require("helmet");
+app.use(helmet());
 
-app.use((req, res, next) => {
-    res.status(201);
-    next()
-})
-
-app.use((req, res, next) => {
-    res.json({ message: 'votre requete a bien ete reçu' });
-    next()
-})
-app.use((req, res) => {
-    console.log('Reponse envoye avec success');
-})
+const rateLimit = require("express-rate-limit");
+app.use(
+    rateLimit({
+        windowMs: 10 * 60 * 1000,
+        max: 100,
+        message:
+            "Vous avez effectué plus de 100 requêtes dans une limite de 10 minutes!",
+        headers: true,
+    })
+);
+app.use('/api/auth', userRoutes)
 
 module.exports = app;

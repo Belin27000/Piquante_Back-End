@@ -1,9 +1,22 @@
-const http = require('http');
-const app = require('./app.js')
-const dotenv = require('dotenv').config();
+/* Import des modules necessaires */
+const app = require("./app");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv").config({ encoding: "latin1" });
 
+/* Connection BDD mongoose */
+mongoose
+    .connect(process.env.DATABASE_URL, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    })
+    // Demarrage serveur
+    .then(() =>
+        app.listen(process.env.SERVER_PORT, () => {
+            console.log(
+                `This server is running on port ${process.env.SERVER_PORT}. Enjoy !`
+            );
+        })
+    )
+    // Arret du serveur si connection impossible
+    .catch(() => console.log("Server connection failed !"));
 
-app.set('port', process.env.PORT || 3000)
-const server = http.createServer(app);
-
-server.listen(process.env.PORT || 3000);
