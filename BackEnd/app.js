@@ -1,6 +1,7 @@
 const express = require('express');
 
 const userRoutes = require('./routes/user.routes.js');
+const saucesRoutes = require('./routes/sauces.routes.js');
 
 const app = express();
 
@@ -29,5 +30,6 @@ app.use(
     })
 );
 app.use('/api/auth', userRoutes)
+app.use('/api/sauces', saucesRoutes)
 
 module.exports = app;
