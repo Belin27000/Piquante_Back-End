@@ -3,6 +3,8 @@ const express = require('express');
 const userRoutes = require('./routes/user.routes.js');
 const saucesRoutes = require('./routes/sauces.routes.js');
 
+const path = require("path");
+
 const app = express();
 
 app.use(express.urlencoded({ extended: true }))
@@ -17,7 +19,12 @@ app.use((req, res, next) => {
 });
 
 const helmet = require("helmet");
-app.use(helmet());
+
+app.use(
+    helmet({
+        crossOriginEmbedderPolicy: false,
+    })
+);
 
 const rateLimit = require("express-rate-limit");
 app.use(
@@ -29,6 +36,8 @@ app.use(
         headers: true,
     })
 );
+
+app.use("/images", express.static(path.join(__dirname, "images")));
 app.use('/api/auth', userRoutes)
 app.use('/api/sauces', saucesRoutes)
 
